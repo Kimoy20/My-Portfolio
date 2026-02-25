@@ -7,6 +7,7 @@ import { SkillProgress } from "@/components/skill-progress";
 import { ParticleBackground } from "@/components/particle-background";
 import { ProfileImage } from "@/components/profile-image";
 import { CodeSnippet } from "@/components/code-snippet";
+import { ThemeSuggestions } from "@/components/theme-suggestions";
 
 const skills = [
   { name: "Java", level: 85 },
@@ -154,6 +155,7 @@ export default function Home() {
             {[
               { href: "#about", label: "About" },
               { href: "#skills", label: "Skills" },
+              { href: "#themes", label: "Themes" },
               { href: "#timeline", label: "Timeline" },
               { href: "#leadership", label: "Leadership" },
               { href: "#certificates", label: "Certificates" },
@@ -398,6 +400,22 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section id="themes" className="grid gap-8 py-16 md:grid-cols-12">
+          <div className="md:col-span-4">
+            <div className="sticky top-24">
+              <h2 className="text-2xl font-semibold tracking-tight">
+                Theme Gallery
+              </h2>
+              <p className="mt-2 text-sm text-muted/80">
+                Curated color combinations.
+              </p>
+            </div>
+          </div>
+          <div className="md:col-span-8">
+            <ThemeSuggestions />
           </div>
         </section>
 
