@@ -1,3 +1,5 @@
+"use client";
+
 import { ContactForm } from "@/components/contact-form";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AnimatedReveal } from "@/components/animated-reveal";
@@ -8,6 +10,8 @@ import { ParticleBackground } from "@/components/particle-background";
 import { ProfileImage } from "@/components/profile-image";
 import { CodeSnippet } from "@/components/code-snippet";
 import { ThemeSuggestions } from "@/components/theme-suggestions";
+import { ScrollToTop } from "@/components/scroll-to-top";
+import { useState } from "react";
 
 const skills = [
   { name: "Java", level: 85 },
@@ -137,45 +141,106 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
 ];
 
 export default function Home() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    { href: "#about", label: "About" },
+    { href: "#skills", label: "Skills" },
+    { href: "#themes", label: "Themes" },
+    { href: "#timeline", label: "Timeline" },
+    { href: "#leadership", label: "Leadership" },
+    { href: "#certificates", label: "Certificates" },
+    { href: "#contact", label: "Contact" },
+  ];
+
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <ParticleBackground />
       <header className="sticky top-0 z-20 border-b border-border/40 bg-background/95 backdrop-blur-md backdrop-saturate-150">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-6 py-4">
           <a
             href="#top"
-            className="group font-semibold tracking-tight text-lg transition-colors hover:text-accent"
+            className="group font-semibold tracking-tight text-xl sm:text-2xl transition-colors hover:text-accent"
           >
             <span className="bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent">
               Kim G. Cañedo
             </span>
           </a>
 
-          <nav className="hidden items-center gap-8 text-sm font-medium text-muted/80 md:flex">
-            {[
-              { href: "#about", label: "About" },
-              { href: "#skills", label: "Skills" },
-              { href: "#themes", label: "Themes" },
-              { href: "#timeline", label: "Timeline" },
-              { href: "#leadership", label: "Leadership" },
-              { href: "#certificates", label: "Certificates" },
-              { href: "#contact", label: "Contact" },
-            ].map(({ href, label }) => (
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center gap-8 text-base sm:text-lg font-medium text-muted/80 md:flex">
+            {navItems.map(({ href, label }) => (
               <a
                 key={href}
                 className="relative transition-colors hover:text-foreground after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-all hover:after:w-full"
                 href={href}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 {label}
               </a>
             ))}
           </nav>
 
-          <ThemeToggle />
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            className="md:hidden relative inline-flex items-center justify-center rounded-lg p-2 text-muted/80 transition-colors hover:text-foreground hover:bg-surface/50"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            <div className="w-6 h-5 relative flex flex-col justify-center">
+              <span
+                className={`absolute h-0.5 w-6 bg-current transition-all duration-300 ${
+                  isMobileMenuOpen
+                    ? "rotate-45 translate-y-0"
+                    : "-translate-y-2"
+                }`}
+              />
+              <span
+                className={`h-0.5 w-6 bg-current transition-all duration-300 ${
+                  isMobileMenuOpen ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`absolute h-0.5 w-6 bg-current transition-all duration-300 ${
+                  isMobileMenuOpen
+                    ? "-rotate-45 translate-y-0"
+                    : "translate-y-2"
+                }`}
+              />
+            </div>
+          </button>
+
+          <div className="hidden md:block">
+            <ThemeToggle />
+          </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-md">
+            <div className="mx-auto w-full max-w-screen-2xl px-6 py-4">
+              <nav className="flex flex-col gap-4 text-sm font-medium text-muted/80">
+                {navItems.map(({ href, label }) => (
+                  <a
+                    key={href}
+                    className="relative transition-colors hover:text-foreground py-2"
+                    href={href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {label}
+                  </a>
+                ))}
+                <div className="pt-4 border-t border-border/20">
+                  <ThemeToggle />
+                </div>
+              </nav>
+            </div>
+          </div>
+        )}
       </header>
 
-      <main id="top" className="mx-auto w-full max-w-6xl px-6">
+      <main id="top" className="mx-auto w-full max-w-screen-2xl px-6">
         <AnimatedReveal>
           <section className="grid gap-12 py-20 md:grid-cols-12 md:gap-16 md:py-32">
             <div className="md:col-span-7 space-y-8">
@@ -188,7 +253,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <h1 className="mt-6 text-balance text-5xl font-semibold tracking-tight md:text-7xl lg:text-8xl leading-tight">
+              <h1 className="mt-6 text-balance text-4xl font-semibold tracking-tight sm:text-5xl md:text-7xl lg:text-8xl leading-tight">
                 <span className="text-foreground block">
                   <TypingAnimation
                     texts={typingTexts}
@@ -202,23 +267,23 @@ export default function Home() {
                   with clean code.
                 </span>
               </h1>
-              <p className="mt-6 max-w-prose text-pretty text-lg leading-8 text-muted/80 md:text-xl">
+              <p className="mt-6 max-w-prose text-pretty text-base leading-7 text-muted/80 sm:text-lg md:text-xl">
                 A responsive portfolio showcasing my journey as an IT student,
                 developer, and leader — designed with clean typography, smooth
                 transitions, and a gentle-on-the-eyes dark theme.
               </p>
 
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-3">
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-3 sm:mt-10">
                 <a
                   href="#contact"
-                  className="group relative inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-accent to-accent/80 px-6 text-sm font-semibold text-black transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent/25"
+                  className="group relative inline-flex h-14 sm:h-12 items-center justify-center rounded-xl bg-gradient-to-r from-accent to-accent/80 px-6 text-sm font-semibold text-black transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent/25 w-full sm:w-auto"
                 >
                   <span className="relative z-10">Contact me</span>
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-accent to-accent/80 opacity-0 transition-opacity group-hover:opacity-100" />
                 </a>
                 <a
                   href="#projects"
-                  className="group inline-flex h-12 items-center justify-center rounded-xl border border-border/40 bg-surface/50 px-6 text-sm font-semibold text-foreground/90 backdrop-blur-sm transition-all hover:border-accent/50 hover:bg-surface/70 hover:scale-105"
+                  className="group inline-flex h-14 sm:h-12 items-center justify-center rounded-xl border border-border/40 bg-surface/50 px-6 text-sm font-semibold text-foreground/90 backdrop-blur-sm transition-all hover:border-accent/50 hover:bg-surface/70 hover:scale-105 w-full sm:w-auto"
                 >
                   View projects
                   <svg
@@ -269,21 +334,23 @@ export default function Home() {
         </AnimatedReveal>
 
         <AnimatedReveal delay={0.2}>
-          <section id="about" className="grid gap-8 py-16 md:grid-cols-12">
+          <section className="grid gap-6 py-12 sm:gap-8 sm:py-16 md:grid-cols-12">
             <div className="md:col-span-4">
-              <div className="sticky top-24">
-                <h2 className="text-2xl font-semibold tracking-tight">About</h2>
+              <div className="sticky top-20 md:top-24">
+                <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+                  About
+                </h2>
                 <p className="mt-2 text-sm text-muted/80">A short intro.</p>
               </div>
             </div>
             <div className="md:col-span-8">
-              <div className="group relative rounded-2xl border border-border/40 bg-gradient-to-br from-surface/50 to-surface/30 p-8 backdrop-blur-sm transition-all hover:border-accent/30 hover:shadow-lg hover:shadow-accent/10">
+              <div className="group relative rounded-2xl border border-border/40 bg-gradient-to-br from-surface/50 to-surface/30 p-6 sm:p-8 backdrop-blur-sm transition-all hover:border-accent/30 hover:shadow-lg hover:shadow-accent/10">
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                 <div className="relative">
                   <div className="flex items-start gap-4">
                     <div className="mt-1 h-8 w-8 rounded-lg bg-gradient-to-br from-accent to-accent/60 flex-shrink-0" />
                     <div>
-                      <p className="leading-8 text-muted/90 text-lg">
+                      <p className="leading-7 text-muted/90 text-base sm:text-lg">
                         I&apos;m{" "}
                         <span className="font-semibold text-foreground">
                           Kim G. Cañedo
@@ -311,10 +378,15 @@ export default function Home() {
           </section>
         </AnimatedReveal>
 
-        <section id="skills" className="grid gap-8 py-16 md:grid-cols-12">
+        <section
+          id="skills"
+          className="grid gap-6 py-12 sm:gap-8 sm:py-16 md:grid-cols-12"
+        >
           <div className="md:col-span-4">
-            <div className="sticky top-24">
-              <h2 className="text-2xl font-semibold tracking-tight">Skills</h2>
+            <div className="sticky top-20 md:top-24">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+                Skills
+              </h2>
               <p className="mt-2 text-sm text-muted/80">
                 Programming · Web · Networking
               </p>
@@ -403,10 +475,13 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="themes" className="grid gap-8 py-16 md:grid-cols-12">
+        <section
+          id="themes"
+          className="grid gap-6 py-12 sm:gap-8 sm:py-16 md:grid-cols-12"
+        >
           <div className="md:col-span-4">
-            <div className="sticky top-24">
-              <h2 className="text-2xl font-semibold tracking-tight">
+            <div className="sticky top-20 md:top-24">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
                 Theme Gallery
               </h2>
               <p className="mt-2 text-sm text-muted/80">
@@ -419,17 +494,20 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="projects" className="grid gap-8 py-16 md:grid-cols-12">
+        <section
+          id="projects"
+          className="grid gap-6 py-12 sm:gap-8 sm:py-16 md:grid-cols-12"
+        >
           <div className="md:col-span-4">
-            <div className="sticky top-24">
-              <h2 className="text-2xl font-semibold tracking-tight">
+            <div className="sticky top-20 md:top-24">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
                 Projects
               </h2>
               <p className="mt-2 text-sm text-muted/80">Selected work.</p>
             </div>
           </div>
-          <div className="grid gap-6 md:col-span-8 sm:grid-cols-2">
-            {projects.map((p, index) => (
+          <div className="grid gap-6 md:col-span-8 sm:grid-cols-1 lg:grid-cols-2">
+            {projects.map((p) => (
               <Card3D
                 key={p.title}
                 intensity={10}
@@ -495,10 +573,13 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="timeline" className="grid gap-8 py-16 md:grid-cols-12">
+        <section
+          id="timeline"
+          className="grid gap-6 py-12 sm:gap-8 sm:py-16 md:grid-cols-12"
+        >
           <div className="md:col-span-4">
-            <div className="sticky top-24">
-              <h2 className="text-2xl font-semibold tracking-tight">
+            <div className="sticky top-20 md:top-24">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
                 Timeline
               </h2>
               <p className="mt-2 text-sm text-muted/80">
@@ -542,10 +623,13 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="leadership" className="grid gap-8 py-16 md:grid-cols-12">
+        <section
+          id="leadership"
+          className="grid gap-6 py-12 sm:gap-8 sm:py-16 md:grid-cols-12"
+        >
           <div className="md:col-span-4">
-            <div className="sticky top-24">
-              <h2 className="text-2xl font-semibold tracking-tight">
+            <div className="sticky top-20 md:top-24">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
                 Leadership
               </h2>
               <p className="mt-2 text-sm text-muted/80">Treasurer spotlight.</p>
@@ -586,16 +670,16 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="certificates" className="grid gap-8 py-16 md:grid-cols-12">
+        <section className="grid gap-6 py-12 sm:gap-8 sm:py-16 md:grid-cols-12">
           <div className="md:col-span-4">
-            <div className="sticky top-24">
-              <h2 className="text-2xl font-semibold tracking-tight">
+            <div className="sticky top-20 md:top-24">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
                 Certificates
               </h2>
               <p className="mt-2 text-sm text-muted/80">Achievement gallery.</p>
             </div>
           </div>
-          <div className="grid gap-6 md:col-span-8 sm:grid-cols-2">
+          <div className="grid gap-6 md:col-span-8 sm:grid-cols-1 lg:grid-cols-2">
             {certificates.map((c, index) => (
               <div
                 key={c.title}
@@ -630,10 +714,15 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="grid gap-8 py-16 md:grid-cols-12">
+        <section
+          id="contact"
+          className="grid gap-6 py-12 sm:gap-8 sm:py-16 md:grid-cols-12"
+        >
           <div className="md:col-span-4">
-            <div className="sticky top-24">
-              <h2 className="text-2xl font-semibold tracking-tight">Contact</h2>
+            <div className="sticky top-20 md:top-24">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+                Contact
+              </h2>
               <div className="mt-4 space-y-3">
                 <a
                   href="mailto:kimcanedo@gmail.com"
@@ -716,6 +805,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      <ScrollToTop />
     </div>
   );
 }

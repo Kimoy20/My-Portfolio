@@ -35,7 +35,7 @@ export function CodeSnippet({ language, code, description }: CodeSnippetProps) {
     return colors[lang.toLowerCase()] || colors.default;
   };
 
-  const highlightCode = (code: string, language: string) => {
+  const highlightCode = (code: string) => {
     // Simple syntax highlighting for common patterns
     const highlighted = code
       // Keywords
@@ -138,7 +138,7 @@ export function CodeSnippet({ language, code, description }: CodeSnippetProps) {
               <pre className="p-3 sm:p-4 text-xs sm:text-sm leading-relaxed">
                 <code
                   dangerouslySetInnerHTML={{
-                    __html: highlightCode(code, language),
+                    __html: highlightCode(code),
                   }}
                   className="font-mono text-foreground/90 break-words whitespace-pre-wrap break-all"
                 />

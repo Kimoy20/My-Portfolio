@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { ChevronDown, Palette, Sun, Moon } from "lucide-react";
 
 type Theme = "dark" | "light";
@@ -79,44 +79,9 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
 
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    try {
-      localStorage.setItem("theme", theme);
-    } catch {
-      // ignore
-    }
-  }, [theme]);
-
-  // Load saved color theme on mount
-  useEffect(() => {
-    try {
-      const savedColorTheme = localStorage.getItem("colorTheme");
-      if (savedColorTheme) {
-        const colorTheme = JSON.parse(savedColorTheme) as ColorTheme;
-        applyColorTheme(colorTheme, false);
-      }
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const applyColorTheme = (colorTheme: ColorTheme, closeDropdown = true) => {
+  const applyColorThemeDOM = useCallback((colorTheme: ColorTheme) => {
     const root = document.documentElement;
     root.style.setProperty("--primary", colorTheme.primary);
     root.style.setProperty("--secondary", colorTheme.secondary);
@@ -125,18 +90,26 @@ export function ThemeToggle() {
     root.style.setProperty("--surface", colorTheme.surface);
     root.style.setProperty("--text", colorTheme.text);
     root.style.setProperty("--muted", colorTheme.muted);
+  }, []);
 
-    // Store in localStorage
-    try {
-      localStorage.setItem("colorTheme", JSON.stringify(colorTheme));
-    } catch {
-      // ignore
-    }
+  const applyColorTheme = useCallback(
+    (colorTheme: ColorTheme, closeDropdown = true) => {
+      applyColorThemeDOM(colorTheme);
 
-    if (closeDropdown) {
-      setIsOpen(false);
-    }
-  };
+      // Store in localStorage
+      try {
+        localStorage.setItem("colorTheme", JSON.stringify(colorTheme));
+      } catch {
+        // ignore
+      }
+
+      // Only close dropdown if it's not the initial mount
+      if (closeDropdown && !isInitialMount.current) {
+        setIsOpen(false);
+      }
+    },
+    [applyColorThemeDOM],
+  );
 
   const resetToDefault = () => {
     const root = document.documentElement;
@@ -156,6 +129,45 @@ export function ThemeToggle() {
 
     setIsOpen(false);
   };
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {
+      // ignore
+    }
+  }, [theme]);
+
+  // Load saved color theme on mount
+  useEffect(() => {
+    try {
+      const savedColorTheme = localStorage.getItem("colorTheme");
+      if (savedColorTheme) {
+        const colorTheme = JSON.parse(savedColorTheme) as ColorTheme;
+        applyColorThemeDOM(colorTheme);
+      }
+    } catch {
+      // ignore
+    }
+
+    // Mark initial mount as complete
+    isInitialMount.current = false;
+  }, [applyColorThemeDOM]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const nextTheme: Theme = theme === "dark" ? "light" : "dark";
 
@@ -198,7 +210,7 @@ export function ThemeToggle() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 rounded-lg border border-border/40 bg-surface/95 backdrop-blur-md shadow-lg z-50 animate-in slide-in-from-top-2 duration-200">
+        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-lg border border-border/40 bg-surface/95 backdrop-blur-md shadow-lg z-50 animate-in slide-in-from-top-2 duration-200 sm:right-0 sm:mt-2">
           <div className="p-4 border-b border-border/20">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-foreground">

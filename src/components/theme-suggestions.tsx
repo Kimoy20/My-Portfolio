@@ -19,24 +19,24 @@ const themeCombinations: ThemeCombination[] = [
   {
     name: "Ocean Breeze",
     primary: "#0EA5E9",
-    secondary: "#0284C7", 
+    secondary: "#0284C7",
     accent: "#06B6D4",
     background: "#0F172A",
     surface: "#1E293B",
     text: "#F8FAFC",
     muted: "#94A3B8",
-    description: "Cool blues with deep ocean vibes"
+    description: "Cool blues with deep ocean vibes",
   },
   {
     name: "Forest Dream",
     primary: "#10B981",
     secondary: "#059669",
-    accent: "#34D399", 
+    accent: "#34D399",
     background: "#052E16",
     surface: "#14532D",
     text: "#F0FDF4",
     muted: "#86EFAC",
-    description: "Natural greens inspired by nature"
+    description: "Natural greens inspired by nature",
   },
   {
     name: "Sunset Glow",
@@ -44,10 +44,10 @@ const themeCombinations: ThemeCombination[] = [
     secondary: "#D97706",
     accent: "#FBBF24",
     background: "#431407",
-    surface: "#7C2D12", 
+    surface: "#7C2D12",
     text: "#FFFBEB",
     muted: "#FED7AA",
-    description: "Warm oranges and golden hour"
+    description: "Warm oranges and golden hour",
   },
   {
     name: "Royal Purple",
@@ -56,9 +56,9 @@ const themeCombinations: ThemeCombination[] = [
     accent: "#A78BFA",
     background: "#2E1065",
     surface: "#4C1D95",
-    text: "#F3E8FF", 
+    text: "#F3E8FF",
     muted: "#C4B5FD",
-    description: "Elegant purples with royal feel"
+    description: "Elegant purples with royal feel",
   },
   {
     name: "Cherry Blossom",
@@ -69,8 +69,8 @@ const themeCombinations: ThemeCombination[] = [
     surface: "#831843",
     text: "#FDF2F8",
     muted: "#FBCFE8",
-    description: "Soft pinks with spring vibes"
-  }
+    description: "Soft pinks with spring vibes",
+  },
 ];
 
 export function ThemeSuggestions() {
@@ -98,13 +98,20 @@ export function ThemeSuggestions() {
 
   const applyThemePreview = (theme: ThemeCombination) => {
     const root = document.documentElement;
-    root.style.setProperty('--primary', theme.primary);
-    root.style.setProperty('--secondary', theme.secondary);
-    root.style.setProperty('--accent', theme.accent);
-    root.style.setProperty('--background', theme.background);
-    root.style.setProperty('--surface', theme.surface);
-    root.style.setProperty('--text', theme.text);
-    root.style.setProperty('--muted', theme.muted);
+    root.style.setProperty("--primary", theme.primary);
+    root.style.setProperty("--secondary", theme.secondary);
+    root.style.setProperty("--accent", theme.accent);
+    root.style.setProperty("--background", theme.background);
+    root.style.setProperty("--surface", theme.surface);
+    root.style.setProperty("--text", theme.text);
+    root.style.setProperty("--muted", theme.muted);
+
+    // Store in localStorage for persistence
+    try {
+      localStorage.setItem("colorTheme", JSON.stringify(theme));
+    } catch (err) {
+      console.error("Failed to save theme:", err);
+    }
   };
 
   return (
@@ -174,7 +181,9 @@ export function ThemeSuggestions() {
                     {copiedTheme === theme.name ? (
                       <>
                         <Check className="h-3 w-3 text-green-500" />
-                        <span className="hidden sm:inline text-green-500">Copied!</span>
+                        <span className="hidden sm:inline text-green-500">
+                          Copied!
+                        </span>
                       </>
                     ) : (
                       <>
@@ -188,39 +197,39 @@ export function ThemeSuggestions() {
 
               {/* Color Palette Display */}
               <div className="flex gap-2 mb-3">
-                <div className="flex-1 grid grid-cols-7 gap-1">
+                <div className="flex-1 grid grid-cols-4 sm:grid-cols-7 gap-1">
                   <div
-                    className="h-8 rounded-sm border border-border/20"
+                    className="h-6 sm:h-8 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.primary }}
                     title="Primary"
                   />
                   <div
-                    className="h-8 rounded-sm border border-border/20"
+                    className="h-6 sm:h-8 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.secondary }}
                     title="Secondary"
                   />
                   <div
-                    className="h-8 rounded-sm border border-border/20"
+                    className="h-6 sm:h-8 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.accent }}
                     title="Accent"
                   />
                   <div
-                    className="h-8 rounded-sm border border-border/20"
+                    className="h-6 sm:h-8 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.background }}
                     title="Background"
                   />
                   <div
-                    className="h-8 rounded-sm border border-border/20"
+                    className="h-6 sm:h-8 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.surface }}
                     title="Surface"
                   />
                   <div
-                    className="h-8 rounded-sm border border-border/20"
+                    className="h-6 sm:h-8 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.text }}
                     title="Text"
                   />
                   <div
-                    className="h-8 rounded-sm border border-border/20"
+                    className="h-6 sm:h-8 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.muted }}
                     title="Muted"
                   />
@@ -228,34 +237,42 @@ export function ThemeSuggestions() {
               </div>
 
               {/* Color Values */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div className="flex items-center gap-1">
                   <div
                     className="w-3 h-3 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.primary }}
                   />
-                  <span className="text-muted/80 font-mono">{theme.primary}</span>
+                  <span className="text-muted/80 font-mono text-xs">
+                    {theme.primary}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div
                     className="w-3 h-3 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.secondary }}
                   />
-                  <span className="text-muted/80 font-mono">{theme.secondary}</span>
+                  <span className="text-muted/80 font-mono text-xs">
+                    {theme.secondary}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div
                     className="w-3 h-3 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.accent }}
                   />
-                  <span className="text-muted/80 font-mono">{theme.accent}</span>
+                  <span className="text-muted/80 font-mono text-xs">
+                    {theme.accent}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div
                     className="w-3 h-3 rounded-sm border border-border/20"
                     style={{ backgroundColor: theme.background }}
                   />
-                  <span className="text-muted/80 font-mono">{theme.background}</span>
+                  <span className="text-muted/80 font-mono text-xs">
+                    {theme.background}
+                  </span>
                 </div>
               </div>
             </div>
@@ -264,7 +281,8 @@ export function ThemeSuggestions() {
 
         <div className="mt-6 p-3 rounded-lg bg-surface/30 border border-border/20">
           <p className="text-xs text-muted/80">
-            💡 <strong>Tip:</strong> Click "Preview" to see the theme live, or "Copy" to get CSS variables for your project.
+            💡 <strong>Tip:</strong> Click &quot;Preview&quot; to see the theme
+            live, or &quot;Copy&quot; to get CSS variables for your project.
           </p>
         </div>
       </div>
