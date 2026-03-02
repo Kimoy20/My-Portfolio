@@ -792,16 +792,23 @@ export default function Home() {
               </span>
             </div>
             <p className="text-sm text-muted/80">
-              Created with passion and modern web technologies • 2026
-            </p>
-            <div className="flex gap-4">
+              Designed & Developed by Kim G. Cañedo • Let's connect on
               <a
-                href="#top"
-                className="text-sm text-muted/60 transition-colors hover:text-foreground"
+                href="https://github.com/Kimoy20"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:text-accent/80 transition-colors ml-1"
               >
-                Back to top ↑
+                GitHub
               </a>
-            </div>
+              {" • "}
+              <a
+                href="mailto:kimcanedo@gmail.com"
+                className="text-accent hover:text-accent/80 transition-colors"
+              >
+                kimcanedo@gmail.com
+              </a>
+            </p>
           </div>
         </div>
       </footer>
